@@ -72,13 +72,25 @@ if __name__ == '__main__':
                     found_images += 1
                     large_url = media.media_url + ':large'
 
+                    sub_dir = ''
+                    if tweet.hashtags is not None and len(tweet.hashtags) > 0:
+                        hashtags = [tag.text.lower() for tag in tweet.hashtags if tag.text != 'NintendoSwitch']
+                        for tag in hashtags:
+                            sub_dir += tag + '/'
+
+                    target_dir = output_dir + sub_dir
+                    try:
+                        os.makedirs(target_dir)
+                    except:
+                        pass
+
                     unix_date = tweet.created_at_in_seconds
                     date = datetime.fromtimestamp(unix_date)
                     str_date = date.strftime('%Y-%m-%d at %H-%M-%S')
                     filename = str_date + '.jpg'
-                    target_path = output_dir + filename
-                    save_photo(large_url, target_path)
 
+                    target_path = target_dir + filename
+                    save_photo(large_url, target_path)
                     print 'Downloaded {}'.format(filename)
 
                     if found_images == args.number:
