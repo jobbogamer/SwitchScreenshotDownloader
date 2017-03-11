@@ -56,43 +56,61 @@ if __name__ == '__main__':
     parser.add_argument('output_dir', type=str)
     args = parser.parse_args()
 
-    tweets = get_tweets(args.username)
-
     # Add trailing slash to output_dir if necessary.
     if not args.output_dir.endswith('/'):
         output_dir = args.output_dir + '/'
     else:
         output_dir = args.output_dir
+
+    # Fetch the tweets.
+    tweets = get_tweets(args.username)
     
+    # The main event: looping over the tweets to get images. We assume that the
+    # twitter API returns them in reverse chronological order (i.e. newest tweet
+    # first) so that we can start at the start of the list.
     found_images = 0
     for tweet in tweets:
         if tweet.media is not None and len(tweet.media) > 0:
             for media in tweet.media:
                 if media.type == 'photo':
                     found_images += 1
+
+                    # Always use the "large" size because for a Switch screenshot it'll be the
+                    # full 1280x720 image.
                     large_url = media.media_url + ':large'
 
                     sub_dir = ''
                     if tweet.hashtags is not None and len(tweet.hashtags) > 0:
+                        # To save effort when posting tweets from the Switch, ignore
+                        # the default #NintendoSwitch hashtag.
                         hashtags = [tag.text.lower() for tag in tweet.hashtags if tag.text != 'NintendoSwitch']
+                        # Add each hashtag in turn, i.e. a tweet with
+                        # "#BreathoftheWild #Shrine #TestOfStrength"
+                        # would be downloaded to {output_dir}/breathofthewild/shrine/testofstrength.
                         for tag in hashtags:
                             sub_dir += tag + '/'
 
+                    # Attempt to create the target directory, ignoring any errors
+                    # because they probably mean the directory already exists.
                     target_dir = output_dir + sub_dir
                     try:
                         os.makedirs(target_dir)
                     except:
                         pass
 
+                    # Contort the tweet's date into a filename. (Going to unix timestamps first
+                    # is easier because tweet.created_at is actually a string.)
                     unix_date = tweet.created_at_in_seconds
                     date = datetime.fromtimestamp(unix_date)
                     str_date = date.strftime('%Y-%m-%d at %H-%M-%S')
                     filename = str_date + '.jpg'
 
+                    # Build entire target file path and download the photo.
                     target_path = target_dir + filename
                     save_photo(large_url, target_path)
                     print 'Downloaded {}'.format(filename)
 
+                    # Stop when we have downloaded the requested number.
                     if found_images == args.number:
                         sys.exit(0)
 
