@@ -51,7 +51,7 @@ def save_photo(url, target_path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-n', '--number', type=int, default=1, nargs=1)
+    parser.add_argument('-n', '--number', type=int, default=1)
     parser.add_argument('username', type=str)
     parser.add_argument('output_dir', type=str)
     args = parser.parse_args()
