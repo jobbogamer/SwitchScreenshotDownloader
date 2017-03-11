@@ -4,6 +4,7 @@ import os
 import sys
 import argparse
 import urllib2
+import shutil
 from datetime import datetime
 
 
@@ -51,6 +52,7 @@ def save_photo(url, target_path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('-l', '--latest', action='store_true')
     parser.add_argument('-n', '--number', type=int, default=1)
     parser.add_argument('username', type=str)
     parser.add_argument('output_dir', type=str)
@@ -109,6 +111,13 @@ if __name__ == '__main__':
                     target_path = target_dir + filename
                     save_photo(large_url, target_path)
                     print 'Downloaded {}'.format(filename)
+
+                    # If requested, make a copy of the image at the top level of the output dir
+                    # called latest.jpg. This should only be done for the first image we process
+                    # since the tweets are in reverse chronological order.
+                    if args.latest and found_images == 1:
+                        latest_path = output_dir + 'latest.jpg'
+                        shutil.copyfile(target_path, latest_path)
 
                     # Stop when we have downloaded the requested number.
                     if found_images == args.number:
