@@ -17,11 +17,9 @@ JPEGs.
 
 1. [Download the tool as a ZIP][download] and unzip
 2. `pip install -r requirements.txt`
-3. `python switch_dl.py your_username /path/to/screenshots/directory
+3. `python switch_dl.py your_username /path/to/screenshots/directory`
 
 ## Command Line Arguments
-
-Basic usage:
 
 `python switch_dl.py your_username /path/to/screenshots/directory` will download
 the latest image from @your_username and store it in the given output directory.
