@@ -54,6 +54,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-l', '--latest', action='store_true')
     parser.add_argument('-n', '--number', type=int, default=1)
+    parser.add_argument('-s', '--no_subfolders', action='store_false', dest='subfolders')
     parser.add_argument('-t', '--require_tag', type=str)
     parser.add_argument('username', type=str)
     parser.add_argument('output_dir', type=str)
@@ -94,8 +95,9 @@ if __name__ == '__main__':
                         # Add each hashtag in turn, i.e. a tweet with
                         # "#BreathoftheWild #Shrine #TestOfStrength"
                         # would be downloaded to {output_dir}/breathofthewild/shrine/testofstrength.
-                        for tag in hashtags:
-                            sub_dir += tag + '/'
+                        if args.subfolders:
+                            for tag in hashtags:
+                                sub_dir += tag + '/'
 
                     elif args.require_tag is not None:
                         # The tweet has no hashtags and --require_tag was passed.
