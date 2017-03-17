@@ -17,7 +17,9 @@ JPEGs.
 
 1. [Download the tool as a ZIP][download] and unzip
 2. `pip install -r requirements.txt`
-3. `python switch_dl.py your_username /path/to/screenshots/directory`
+3. Set your API keys as environment variables: `SSDL_CONSUMER_KEY`,
+   `SSDL_CONSUMER_SECRET`, `SSDL_ACCESS_TOKEN_KEY`, `SSDL_ACCESS_TOKEN_SECRET`
+4. `python switch_dl.py your_username /path/to/screenshots/directory`
 
 ## Command Line Arguments
 
