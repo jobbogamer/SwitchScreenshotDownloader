@@ -128,6 +128,7 @@ if __name__ == '__main__':
                     target_path = target_dir + filename
                     save_photo(large_url, target_path)
                     print 'Downloaded {}'.format(filename)
+                    found_images += 1
 
                     # If requested, make a copy of the image at the top level of the output dir
                     # called latest.jpg. This should only be done for the first image we process
@@ -137,7 +138,6 @@ if __name__ == '__main__':
                         shutil.copyfile(target_path, latest_path)
 
                     # Stop when we have downloaded the requested number.
-                    found_images += 1
                     if found_images == args.number:
                         sys.exit(0)
 
