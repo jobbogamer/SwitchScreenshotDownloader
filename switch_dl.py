@@ -52,12 +52,18 @@ def save_photo(url, target_path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-l', '--latest', action='store_true')
-    parser.add_argument('-n', '--number', type=int, default=1)
-    parser.add_argument('-s', '--no_subfolders', action='store_false', dest='subfolders')
-    parser.add_argument('-t', '--require_tag', type=str)
-    parser.add_argument('username', type=str)
-    parser.add_argument('output_dir', type=str)
+    parser.add_argument('-l', '--latest', action='store_true',
+                        help='save a copy of the most recent image at the top level of output_dir')
+    parser.add_argument('-n', '--number', type=int, default=1, metavar='N',
+                        help='download N images instead of only one')
+    parser.add_argument('-s', '--no_subfolders', action='store_false', dest='subfolders',
+                        help='don\'t save images into subfolders based on hashtags')
+    parser.add_argument('-t', '--require_tag', type=str, metavar='TAG',
+                        help='only download images from tweets containing the hastag TAG')
+    parser.add_argument('username', type=str,
+                        help='username of the account to fetch tweets from')
+    parser.add_argument('output_dir', type=str,
+                        help='top level directory to save images to')
     args = parser.parse_args()
 
     # Add trailing slash to output_dir if necessary.
