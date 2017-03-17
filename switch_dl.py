@@ -54,6 +54,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-l', '--latest', action='store_true')
     parser.add_argument('-n', '--number', type=int, default=1)
+    parser.add_argument('-t', '--require_tag', type=str)
     parser.add_argument('username', type=str)
     parser.add_argument('output_dir', type=str)
     args = parser.parse_args()
@@ -75,8 +76,6 @@ if __name__ == '__main__':
         if tweet.media is not None and len(tweet.media) > 0:
             for media in tweet.media:
                 if media.type == 'photo':
-                    found_images += 1
-
                     # Always use the "large" size because for a Switch screenshot it'll be the
                     # full 1280x720 image.
                     large_url = media.media_url + ':large'
@@ -86,11 +85,21 @@ if __name__ == '__main__':
                         # To save effort when posting tweets from the Switch, ignore
                         # the default #NintendoSwitch hashtag.
                         hashtags = [tag.text.lower() for tag in tweet.hashtags if tag.text != 'NintendoSwitch']
+
+                        # If --require_tag was passed, check that the tag was given.
+                        if args.require_tag is not None:
+                            if args.require_tag.lower() not in hashtags:
+                                continue
+
                         # Add each hashtag in turn, i.e. a tweet with
                         # "#BreathoftheWild #Shrine #TestOfStrength"
                         # would be downloaded to {output_dir}/breathofthewild/shrine/testofstrength.
                         for tag in hashtags:
                             sub_dir += tag + '/'
+
+                    elif args.require_tag is not None:
+                        # The tweet has no hashtags and --require_tag was passed.
+                        continue
 
                     # Attempt to create the target directory, ignoring any errors
                     # because they probably mean the directory already exists.
@@ -120,6 +129,7 @@ if __name__ == '__main__':
                         shutil.copyfile(target_path, latest_path)
 
                     # Stop when we have downloaded the requested number.
+                    found_images += 1
                     if found_images == args.number:
                         sys.exit(0)
 
